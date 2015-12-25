@@ -132,6 +132,11 @@ class ViewController: UIViewController, UITextFieldDelegate {
             self.loginButton.center.y -= 30.0
             self.loginButton.alpha = 1.0
             }, completion: nil)
+        
+        animateCloud(cloud1)
+        animateCloud(cloud2)
+        animateCloud(cloud3)
+        animateCloud(cloud4)        
     }
     
     // MARK: - Private
@@ -180,6 +185,20 @@ class ViewController: UIViewController, UITextFieldDelegate {
             self.loginButton.bounds.size.width -= 80.0
             self.loginButton.center.y -= 60.0
             }, completion: nil)
+    }
+    
+    private func animateCloud(cloud: UIImageView)
+    {
+        let cloudSpeed = 60.0 / view.frame.size.width
+        let animationDuration = (view.frame.size.width - cloud.frame.origin.x) * cloudSpeed
+        
+        
+        UIView.animateWithDuration(NSTimeInterval(animationDuration), delay: 0.0, options: [.CurveLinear], animations: {
+            cloud.frame.origin.x = self.view.frame.size.width
+            }, completion: { _ in
+                cloud.frame.origin.x = -cloud.frame.size.width
+                self.animateCloud(cloud)
+        })
     }
     
     // MARK: further methods
