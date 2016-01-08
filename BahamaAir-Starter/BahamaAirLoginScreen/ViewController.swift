@@ -136,7 +136,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         animateCloud(cloud1)
         animateCloud(cloud2)
         animateCloud(cloud3)
-        animateCloud(cloud4)        
+        animateCloud(cloud4)
     }
     
     // MARK: - Private
