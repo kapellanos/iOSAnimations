@@ -83,11 +83,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-        heading.center.x -= view.bounds.width
-        username.center.x -= view.bounds.width
-        password.center.x -= view.bounds.width
-        
+    
         cloud1.alpha = 0.0
         cloud2.alpha = 0.0
         cloud3.alpha = 0.0
@@ -100,17 +96,19 @@ class ViewController: UIViewController, UITextFieldDelegate {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
-        UIView.animateWithDuration(0.5) {
-            self.heading.center.x += self.view.bounds.width
-        }
+        let flyRight = CABasicAnimation(keyPath: "position.x")
+        flyRight.fromValue = -view.bounds.size.width / 2
+        flyRight.toValue = view.bounds.size.width / 2
+        flyRight.duration = 0.5
+        flyRight.fillMode = kCAFillModeBoth
         
-        UIView.animateWithDuration(0.5, delay: 0.3, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.0, options: [], animations: {
-            self.username.center.x += self.view.bounds.width
-            }, completion: nil)
+        heading.layer.addAnimation(flyRight, forKey: nil)
         
-        UIView.animateWithDuration(0.5, delay: 0.4, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.0, options: [], animations: {
-            self.password.center.x += self.view.bounds.width
-            }, completion: nil)
+        flyRight.beginTime = CACurrentMediaTime() + 0.3
+        username.layer.addAnimation(flyRight, forKey: nil)
+        
+        flyRight.beginTime = CACurrentMediaTime() + 0.4
+        password.layer.addAnimation(flyRight, forKey: nil)
         
         UIView.animateWithDuration(0.5, delay: 0.5, options: [], animations: {
             self.cloud1.alpha = 1.0
