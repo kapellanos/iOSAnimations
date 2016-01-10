@@ -81,9 +81,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         
         //set up the UI
-        loginButton.layer.cornerRadius = 8.0
-        loginButton.layer.masksToBounds = true
-        
         spinner.frame = CGRect(x: -20.0, y: 6.0, width: 20.0, height: 20.0)
         spinner.startAnimating()
         spinner.alpha = 0.0
@@ -113,9 +110,6 @@ class ViewController: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        loginButton.center.y += 30.0
-        loginButton.alpha = 0.0
-        
         let showClouds = CABasicAnimation(keyPath: "opacity")
         showClouds.fromValue = 0.0
         showClouds.toValue = 1.0
@@ -138,37 +132,40 @@ class ViewController: UIViewController, UITextFieldDelegate {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         
+        let formGroup = CAAnimationGroup()
+        formGroup.duration = 0.5
+        formGroup.fillMode = kCAFillModeBackwards
+        
         let flyRight = CABasicAnimation(keyPath: "position.x")
         flyRight.fromValue = -view.bounds.size.width / 2
         flyRight.toValue = view.bounds.size.width / 2
-        flyRight.duration = 0.5
-        flyRight.fillMode = kCAFillModeBoth
-        flyRight.delegate = self
-        flyRight.setValue("form", forKey: "name")
-        flyRight.setValue(heading.layer, forKey: "layer")
         
-        heading.layer.addAnimation(flyRight, forKey: nil)
+        let fadeFieldIn = CABasicAnimation(keyPath: "opacity")
+        fadeFieldIn.fromValue = 0.25
+        fadeFieldIn.toValue = 1.0
         
-        flyRight.beginTime = CACurrentMediaTime() + 0.3
-        flyRight.setValue(username.layer, forKey: "layer")
-        username.layer.addAnimation(flyRight, forKey: nil)
-        username.layer.position.x = view.bounds.size.width / 2
+        formGroup.animations = [flyRight, fadeFieldIn]
+        heading.layer.addAnimation(formGroup, forKey: nil)
         
-        flyRight.beginTime = CACurrentMediaTime() + 0.4
-        flyRight.setValue(password.layer, forKey: "layer")
-        password.layer.addAnimation(flyRight, forKey: nil)
-        password.layer.position.x = view.bounds.size.width / 2
+        formGroup.delegate = self
+        formGroup.setValue("form", forKey: "name")
+        formGroup.setValue(username.layer, forKey: "layer")
         
+        formGroup.beginTime = CACurrentMediaTime() + 0.3
+        username.layer.addAnimation(formGroup, forKey: nil)
         
-        UIView.animateWithDuration(0.5, delay: 0.5, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.0, options: [], animations: {
-            self.loginButton.center.y -= 30.0
-            self.loginButton.alpha = 1.0
-            }, completion: nil)
+        formGroup.setValue(password.layer, forKey: "layer")
+        formGroup.beginTime = CACurrentMediaTime() + 0.4
+        password.layer.addAnimation(formGroup, forKey: nil)
         
         let flyLeft = CABasicAnimation(keyPath: "position.x")
         flyLeft.fromValue = info.layer.position.x + view.frame.size.width
         flyLeft.toValue = info.layer.position.x
         flyLeft.duration = 5.0
+        flyLeft.autoreverses = true
+        flyLeft.repeatCount = 2.5
+        flyLeft.speed = 2.0
+        
         info.layer.addAnimation(flyLeft, forKey: "infoappear")
         
         let fadeLabelIn = CABasicAnimation(keyPath: "opacity")
@@ -176,6 +173,27 @@ class ViewController: UIViewController, UITextFieldDelegate {
         fadeLabelIn.toValue = 1.0
         fadeLabelIn.duration = 4.5
         info.layer.addAnimation(fadeLabelIn, forKey: "fadein")
+        
+        let groupAnimation = CAAnimationGroup()
+        groupAnimation.beginTime = CACurrentMediaTime() + 0.5
+        groupAnimation.duration = 0.5
+        groupAnimation.fillMode = kCAFillModeBackwards
+        groupAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseIn)
+        
+        let scaleDown = CABasicAnimation(keyPath: "transform.scale")
+        scaleDown.fromValue = 3.5
+        scaleDown.toValue = 1.0
+        
+        let rotate = CABasicAnimation(keyPath: "transform.rotation")
+        rotate.fromValue = CGFloat(M_PI_4)
+        rotate.toValue = 0.0
+
+        let fade = CABasicAnimation(keyPath: "opacity")
+        fade.fromValue = 0.0
+        fade.toValue = 1.0
+
+        groupAnimation.animations = [scaleDown, rotate, fade]
+        loginButton.layer.addAnimation(groupAnimation, forKey: nil)
         
         username.delegate = self
         password.delegate = self
