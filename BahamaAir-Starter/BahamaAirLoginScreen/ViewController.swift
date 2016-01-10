@@ -268,6 +268,13 @@ class ViewController: UIViewController, UITextFieldDelegate {
     
     private func resetForm()
     {
+        let wooble = CAKeyframeAnimation(keyPath: "transform.rotation")
+        wooble.duration = 0.25
+        wooble.repeatCount = 4
+        wooble.values = [0.0, -M_PI_4/4, 0.0, M_PI_4, 0.0]
+        wooble.keyTimes = [0.0, 0.25, 0.5, 0.75, 1.0]
+        heading.layer.addAnimation(wooble, forKey: nil)
+        
         UIView.transitionWithView(status, duration: 0.2, options: [.TransitionFlipFromTop], animations: {
             self.status.hidden = true
             self.status.center = self.statusPosition
@@ -336,6 +343,23 @@ class ViewController: UIViewController, UITextFieldDelegate {
         tintBackgroundColor(layer: loginButton.layer, toColor: tintColor)
         
         roundCorners(layer: loginButton.layer, toRadius: 25.0)
+        
+        let ballon = CALayer()
+        ballon.contents = UIImage(named: "balloon")!.CGImage
+        ballon.frame = CGRect(x: -50.0, y: 0.0, width: 50.0, height: 65.0)
+        view.layer.insertSublayer(ballon, below: username.layer)
+        
+        let flight = CAKeyframeAnimation(keyPath: "position")
+        flight.duration = 12.0
+        flight.values = [
+            CGPoint(x: -50.0, y: 0.0),
+            CGPoint(x: view.frame.width + 50.0, y: 160.0),
+            CGPoint(x: -50.0, y: loginButton.center.y)
+            ].map { NSValue(CGPoint: $0) }
+        flight.keyTimes = [0.0, 0.5, 1.0]
+        
+        ballon.addAnimation(flight, forKey: nil)
+        ballon.position = CGPoint(x: -50.0, y: loginButton.center.y)
     }
     
     // MARK: UITextFieldDelegate
